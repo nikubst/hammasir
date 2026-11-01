@@ -2,7 +2,16 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <!-- PWA / App -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#060913">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-180.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="هم‌مسیر">
     <title>هم‌مسیر | سامانه هوشمند ناوبری و بازطراحی اهداف</title>
     <meta name="description" content="سامانه هوشمند ناوبری اهداف: بدون جریمه، با روزهای ضربه‌گیر، ریشه‌یابی موانع و بازطراحی خودکار مسیر برای شما.">
     <!-- Google Fonts: Vazirmatn -->
@@ -67,6 +76,12 @@
 
             <!-- Action buttons -->
             <div class="nav-actions">
+                <button class="btn btn-ghost btn-sm" id="btnInstallApp" style="display: none;" onclick="installApp()" title="نصب هم‌مسیر روی گوشی یا کامپیوتر">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    نصب اپ
+                </button>
                 <button class="btn btn-warning btn-replan-pulse" onclick="openDiagnosisModal()" title="اگر برنامه‌تان به هم خورده روی این بزنید">
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -310,6 +325,38 @@
         </section>
 
     </main>
+
+    <!-- ================= MOBILE BOTTOM TAB BAR (app mode) ================= -->
+    <nav class="bottom-bar" aria-label="ناوبری اپ">
+        <button class="bottom-tab active" data-tab="roadmapView" onclick="switchTab('roadmapView')">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+            <span>مسیر</span>
+        </button>
+        <button class="bottom-tab" data-tab="visualGraphView" onclick="switchTab('visualGraphView')">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            <span>گراف</span>
+        </button>
+        <button class="bottom-tab bottom-tab-replan" onclick="openDiagnosisModal()" aria-label="برنامه‌ام به هم ریخت">
+            <span class="replan-fab">
+                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            </span>
+            <span>بازطراحی</span>
+        </button>
+        <button class="bottom-tab" data-tab="calendarView" onclick="switchTab('calendarView')">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            <span>تقویم</span>
+        </button>
+        <button class="bottom-tab" data-tab="analyticsView" onclick="switchTab('analyticsView')">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+            <span>تاب‌آوری</span>
+        </button>
+    </nav>
+
+    <!-- iOS install hint (Safari has no install prompt) -->
+    <div class="ios-install-hint" id="iosInstallHint">
+        <span>برای نصب هم‌مسیر: دکمه <strong>Share</strong> سافاری ← <strong>Add to Home Screen</strong></span>
+        <button onclick="dismissIosHint()" aria-label="بستن">&times;</button>
+    </div>
 
     <!-- ================= COMPASSIONATE DIAGNOSTIC MODAL ================= -->
     <div class="modal-backdrop" id="diagnosisModal">

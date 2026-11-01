@@ -137,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadLocalState();
     renderAllViews();
     setupEventListeners();
+    initAppMode();
 });
 
 function setupEventListeners() {
@@ -150,11 +151,10 @@ function setupEventListeners() {
 
 // Tab Switching
 function switchTab(tabId) {
-    document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".nav-tab, .bottom-tab").forEach(t => t.classList.remove("active"));
     document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
 
-    const btn = document.querySelector(`[data-tab="${tabId}"]`);
-    if (btn) btn.classList.add("active");
+    document.querySelectorAll(`[data-tab="${tabId}"]`).forEach(b => b.classList.add("active"));
 
     const content = document.getElementById(tabId);
     if (content) content.classList.add("active");
@@ -510,4 +510,65 @@ function showToast(msg) {
     setTimeout(() => {
         toast.classList.remove("show");
     }, 3500);
+}
+
+// ==========================================================================
+// App Mode (PWA): service worker, install prompt, iOS hint, shortcuts
+// ==========================================================================
+let deferredInstallPrompt = null;
+
+function isStandalone() {
+    return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function initAppMode() {
+    // Offline support
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("/sw.js").catch((e) => console.warn("SW registration failed:", e));
+        });
+    }
+
+    // Android / Chrome / Edge: native install prompt
+    window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        const btn = document.getElementById("btnInstallApp");
+        if (btn && !isStandalone()) btn.style.display = "inline-flex";
+    });
+
+    window.addEventListener("appinstalled", () => {
+        deferredInstallPrompt = null;
+        const btn = document.getElementById("btnInstallApp");
+        if (btn) btn.style.display = "none";
+        showToast("هم‌مسیر روی دستگاه شما نصب شد 🎉");
+    });
+
+    // iOS Safari: no install prompt, show a one-time hint
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    if (isIOS && !isStandalone() && !localStorage.getItem("hammasir_ios_hint_dismissed")) {
+        setTimeout(() => {
+            const hint = document.getElementById("iosInstallHint");
+            if (hint) hint.classList.add("show");
+        }, 2500);
+    }
+
+    // Home-screen shortcut: /?action=replan opens the diagnosis sheet directly
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("action") === "replan") {
+        setTimeout(openDiagnosisModal, 300);
+    }
+}
+
+async function installApp() {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    document.getElementById("btnInstallApp").style.display = "none";
+}
+
+function dismissIosHint() {
+    document.getElementById("iosInstallHint").classList.remove("show");
+    localStorage.setItem("hammasir_ios_hint_dismissed", "1");
 }

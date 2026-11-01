@@ -1261,3 +1261,136 @@ body {
     .week-grid { grid-template-columns: repeat(2, 1fr); }
     .nav-tabs { flex-wrap: wrap; width: 100%; }
 }
+
+/* ==========================================================================
+   App Mode (PWA) — bottom tab bar, safe areas, iOS install hint
+   ========================================================================== */
+.bottom-bar,
+.ios-install-hint {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    /* Compact header: brand + install button only; tabs move to the bottom bar */
+    .navbar { padding: calc(0.6rem + env(safe-area-inset-top)) 1rem 0.6rem; }
+    .nav-container { flex-direction: row; align-items: center; }
+    .nav-tabs,
+    .btn-replan-pulse,
+    .brand-sub { display: none; }
+    .nav-actions .btn-ghost { padding: 0.4rem 0.7rem; }
+
+    .main-layout {
+        padding: 1.25rem 1rem calc(6.5rem + env(safe-area-inset-bottom));
+        gap: 1.25rem;
+    }
+    .card { padding: 1.25rem; }
+    .hero-card { padding: 1.5rem 1.25rem; }
+    .hero-heading { font-size: 1.5rem; }
+    .hero-right { display: none; }
+    .hero-stats-row { gap: 1.25rem; }
+    .stat-number { font-size: 1.15rem; }
+    .current-goal-title { font-size: 1.2rem; }
+    .progress-meta { min-width: 100%; }
+    .timeline { padding-right: 1.6rem; }
+    .milestone-item { padding: 1.1rem; }
+    .milestone-node { right: -1.95rem; }
+    .timeline::before { right: 6px; }
+    .milestone-header { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+    .microtask-row { align-items: flex-start; }
+    .week-grid { grid-template-columns: 1fr 1fr; }
+    .day-box { min-height: 120px; }
+    .graph-step-node { gap: 0.9rem; padding: 1rem; }
+    .modal-backdrop { align-items: flex-end; padding: 0; }
+    .modal-window {
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        max-height: 92vh;
+        overflow-y: auto;
+        padding: 1.5rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));
+    }
+    .toast { bottom: calc(6rem + env(safe-area-inset-bottom)); width: max-content; max-width: 90vw; text-align: center; }
+
+    .bottom-bar {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 60;
+        justify-content: space-around;
+        align-items: flex-end;
+        padding: 0.45rem 0.5rem calc(0.45rem + env(safe-area-inset-bottom));
+        background: rgba(6, 9, 19, 0.92);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid var(--border-subtle);
+    }
+
+    .bottom-tab {
+        flex: 1;
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.15rem;
+        font-size: 0.68rem;
+        font-weight: 600;
+        padding: 0.25rem 0;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: var(--transition-fast);
+    }
+
+    .bottom-tab.active { color: var(--primary-light); }
+
+    .replan-fab {
+        width: 52px;
+        height: 52px;
+        margin-top: -1.6rem;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid var(--bg-base);
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+    }
+
+    .bottom-tab-replan { color: var(--amber-light); }
+
+    .ios-install-hint.show {
+        display: flex;
+        position: fixed;
+        left: 0.75rem;
+        right: 0.75rem;
+        bottom: calc(5.5rem + env(safe-area-inset-bottom));
+        z-index: 70;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        background: rgba(30, 41, 59, 0.97);
+        border: 1px solid var(--border-active);
+        border-radius: var(--radius-md);
+        padding: 0.8rem 1rem;
+        font-size: 0.82rem;
+        box-shadow: var(--shadow-elevated);
+        animation: fadeIn 0.3s ease;
+    }
+
+    .ios-install-hint button {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.4rem;
+        line-height: 1;
+        cursor: pointer;
+    }
+}
+
+/* Installed app: no browser chrome, avoid text selection on taps */
+@media (display-mode: standalone) {
+    body { -webkit-user-select: none; user-select: none; }
+    input, textarea { -webkit-user-select: text; user-select: text; }
+}

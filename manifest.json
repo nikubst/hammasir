@@ -1,0 +1,28 @@
+{
+  "name": "هم‌مسیر - ناوبری تطبیق‌پذیر اهداف",
+  "short_name": "هم‌مسیر",
+  "description": "هدفت را بنویس، مسیر بگیر؛ اگر برنامه به هم ریخت، بدون جریمه علت را پیدا می‌کند و مسیر تازه می‌سازد.",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "fa",
+  "background_color": "#060913",
+  "theme_color": "#060913",
+  "categories": ["productivity", "lifestyle", "education"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "برنامه‌ام به هم ریخت",
+      "short_name": "بازطراحی مسیر",
+      "url": "/?action=replan",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
